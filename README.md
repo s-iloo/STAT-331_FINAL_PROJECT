@@ -17,7 +17,7 @@ To analyze the relationship between variables.
 
 ### Team
 
-The Ecologistics Web Scraper team consists of 12 Cal Poly students. Over the course of about 6 months, we worked as a team to deploy this web application. The team members are listed below:
+The team consists of 4 Cal Poly students. Over the course of about 3 weeks, we worked as a team to analyze data using R. The team members are listed below:
 
 - [Hayley Chang](https://www.linkedin.com/in/hayley-chang/) - Software Developer
 
