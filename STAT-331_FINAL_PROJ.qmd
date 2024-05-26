@@ -1,26 +1,63 @@
 ---
-title: "Stat-331 Final Project"
-format: html
-editor: visual
+title: "Final Project"
+subtitle: ""
+author: "Hayley C., Felicia P., Ian L., Shane W."
+format: 
+  html:
+    embed-resources: true
+    code-tools: true
+    toc: true
+    number-sections: true
+editor: source
+execute: 
+  error: true
+  echo: true
+  message: false
+  warning: false
 ---
 
-## Quarto
-
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+## Library Imports
 
 ```{r}
-1 + 1
+library(tidyverse)
+library(dplyr)
 ```
 
-You can add options to executable code like this
+## Data
 
-```{r}
-#| echo: false
-2 * 2
+### Variables
+
+Average daily income is the mean daily household per capita income or consumption expenditure from the survey expressed in 2017 constant internship dollars.
+
+The life expectancy, at birth is the number of years a newborn infant would live if the current mortality rates at different ages were to stay the same throughout its life.
+
+```{r Load data}
+average_daily_income_data <- read.csv("./mincpcap_cppp.csv")
+life_expectancy_data <- read.csv("./lifeExpectancy.csv")
+
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+```{r Check Column Types}
+average_daily_income_data |> 
+  summarise(across(.cols = everything(), 
+                   .fns = typeof))
+life_expectancy_data |> 
+  summarise(across(.cols = everything(), 
+                   .fns = typeof))
+```
+
+```{r }
+average_daily_income_data <- average_daily_income_data |> 
+  mutate(across(.cols = everything(), .fns = ~ if(is.numeric(class(.x))) as.numeric(.x) else .x))
+
+life_expectancy_data <- life_expectancy_data |> 
+  mutate(across(.cols = everything(), .fns = ~ if(is.numeric(class(.x))) as.numeric(.x) else .x))
+```
+
+### How the Data was Cleaned
+
+To the clean the data, we looked at the data types of the values and saw that all the numbers were of the type, character, despite having their class be numeric. To clean this, we mutated each year's column to be a numeric type.
+
+The year names initially had an X in front of the name when the data was first loaded. We chose to keep this naming convention so that when referencing the name, we could use the more common way of referencing a column name instead of back tics.
+
+Instead of eliminating NA values in average, those values were left so that when joining the data, we can make a decision which years or countries to pick based on data that overlaps between the data frames.
