@@ -47,11 +47,18 @@ life_expectancy_data |>
 ```
 
 ```{r }
-average_daily_income_data <- average_daily_income_data |> 
-  mutate(across(.cols = everything(), .fns = ~ if(is.numeric(class(.x))) as.numeric(.x) else .x))
+#average_daily_income_data <- average_daily_income_data |> 
+ # mutate(across(.cols = everything(), .fns = ~ if(is.numeric(class(.x))) as.numeric(.x) else .x))
 
+#life_expectancy_data <- life_expectancy_data |> 
+ # mutate(across(.cols = everything(), .fns = ~ if(is.numeric(class(.x))) as.numeric(.x) else .x))
+
+# Making the class type numeric wasn't working properly, I fixed it - Shane
+
+average_daily_income_data <- average_daily_income_data |>
+  mutate(across(-country, as.numeric))
 life_expectancy_data <- life_expectancy_data |> 
-  mutate(across(.cols = everything(), .fns = ~ if(is.numeric(class(.x))) as.numeric(.x) else .x))
+  mutate(across(-country, as.numeric))
 ```
 
 ### How the Data was Cleaned
@@ -61,3 +68,15 @@ To the clean the data, we looked at the data types of the values and saw that al
 The year names initially had an X in front of the name when the data was first loaded. We chose to keep this naming convention so that when referencing the name, we could use the more common way of referencing a column name instead of back tics.
 
 Instead of eliminating NA values in average, those values were left so that when joining the data, we can make a decision which years or countries to pick based on data that overlaps between the data frames.
+
+```{r}
+avg_di_long <- average_daily_income_data|>
+  pivot_longer(cols = -country,
+               names_to = "Year",
+               values_to = "Average Daily Income")
+
+avg_le_long <- life_expectancy_data|>
+  pivot_longer(cols = -country,
+               names_to = "Year",
+               values_to = "Average Life Expectancy")
+```
