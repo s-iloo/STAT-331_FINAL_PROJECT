@@ -34,7 +34,6 @@ The life expectancy, at birth is the number of years a newborn infant would live
 ```{r Load data}
 average_daily_income_data <- read.csv("./mincpcap_cppp.csv")
 life_expectancy_data <- read.csv("./lifeExpectancy.csv")
-
 ```
 
 ```{r Check Column Types}
@@ -47,14 +46,6 @@ life_expectancy_data |>
 ```
 
 ```{r }
-#average_daily_income_data <- average_daily_income_data |> 
- # mutate(across(.cols = everything(), .fns = ~ if(is.numeric(class(.x))) as.numeric(.x) else .x))
-
-#life_expectancy_data <- life_expectancy_data |> 
- # mutate(across(.cols = everything(), .fns = ~ if(is.numeric(class(.x))) as.numeric(.x) else .x))
-
-# Making the class type numeric wasn't working properly, I fixed it - Shane
-
 average_daily_income_data <- average_daily_income_data |>
   mutate(across(-country, as.numeric))
 life_expectancy_data <- life_expectancy_data |> 
@@ -81,4 +72,16 @@ avg_le_long <- life_expectancy_data|>
                values_to = "Average Life Expectancy")
 ```
 
+### How the Data was Pivoted
+
 Next, we pivoted the data by country to separate each year into individual observations. For each country and year, we now have the corresponding average daily income and average life expectancy.
+
+### How the Data was Joined
+
+In order to create one data table, we must join our two data sets that were cleaned and pivoted. One way we can do this is through an inner join, which will also handle and missing data by dropping it.
+```{r}
+daily_income_and_life_expectancy <- avg_di_long |> 
+  inner_join(avg_le_long, join_by(country, Year)) |>
+  rename(Country = country)
+```
+In addition to joining the data, the name of the "country" column was capitalized in order to have uniformity among the variable names.
