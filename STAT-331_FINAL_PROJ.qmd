@@ -80,3 +80,5 @@ avg_le_long <- life_expectancy_data|>
                names_to = "Year",
                values_to = "Average Life Expectancy")
 ```
+
+Next, we pivoted the data by country to separate each year into individual observations. For each country and year, we now have the corresponding average daily income and average life expectancy.
