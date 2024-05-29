@@ -31,12 +31,18 @@ Average daily income is the mean daily household per capita income or consumptio
 
 The life expectancy, at birth is the number of years a newborn infant would live if the current mortality rates at different ages were to stay the same throughout its life.
 
+### Hypothesized Relationship Between the Variables
+
+Higher average daily income is positively associated with higher life expectancy at birth. 
+
 ```{r Load data}
+
 average_daily_income_data <- read.csv("./mincpcap_cppp.csv")
 life_expectancy_data <- read.csv("./lifeExpectancy.csv")
 ```
 
 ```{r Check Column Types}
+
 average_daily_income_data |> 
   summarise(across(.cols = everything(), 
                    .fns = typeof))
