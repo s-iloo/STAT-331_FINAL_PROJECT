@@ -94,6 +94,7 @@ daily_income_and_life_expectancy <- avg_di_long |>
 ```
 In addition to joining the data, the name of the "country" column was capitalized in order to have uniformity among the variable names.
 
+## Linear Regression
 ### Exploring the Relationship Between the Two Variables
 
 The variables to be explored are the average daily income in relation to the average life expectancy. The relationship to be explored is how the income effects the life expectancy.
