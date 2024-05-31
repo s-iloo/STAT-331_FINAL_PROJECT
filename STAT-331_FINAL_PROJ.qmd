@@ -21,6 +21,8 @@ execute:
 ```{r}
 library(tidyverse)
 library(dplyr)
+library(gganimate)
+library(plotly)
 ```
 
 ## Data
@@ -85,3 +87,48 @@ daily_income_and_life_expectancy <- avg_di_long |>
   rename(Country = country)
 ```
 In addition to joining the data, the name of the "country" column was capitalized in order to have uniformity among the variable names.
+
+### Exploring the Relationship Between the Two Variables
+
+The variables to be explored are the average daily income in relation to the average life expectancy. The relationship to be explored is how the income effects the life expectancy.
+
+The explanatory variable is the average income and the response variable is the average life expectancy.
+
+```{r}
+daily_income_and_life_expectancy |>
+  ggplot(aes(x = `Average Daily Income`, y = `Average Life Expectancy`)) +
+    geom_point(alpha = 0.7, color = "steelblue") +
+    theme_minimal() +
+    labs(title = "Relationship between Average Daily Income and Life Expectancy",
+         x = "Average Daily Income",
+         y = "",
+         subtitle = "Average Life Expectancy at Birth")
+```
+To explore the relationship overtime
+```{r}
+daily_income_and_life_expectancy |>
+  mutate(Year = as.integer(str_remove(Year, "X"))) |>
+  plot_ly(
+    x = ~`Average Daily Income`,
+    y = ~`Average Life Expectancy`,
+    text = ~Country,
+    frame = ~Year,
+    type = 'scatter',
+    mode = 'markers',
+    marker = list(size = 10, opacity = 0.7)
+  ) |>
+  layout(
+    title = "Changes in Average Daily Income and Life Expectancy Over Time",
+    xaxis = list(title = "Average Daily Income"),
+    yaxis = list(title = "Average Life Expectancy at Birth")
+  ) |>
+  animation_opts(
+    frame = 1000, # milliseconds per frame
+    transition = 0, # duration of the transition between frames
+    redraw = FALSE
+  ) |>
+  animation_slider(
+    currentvalue = list(prefix = "Year: ")
+  )
+```
+
