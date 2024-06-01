@@ -1,6 +1,6 @@
 ---
-title: "Final Project"
-subtitle: ""
+title: "The Relationship Between Income and Life Expectancy"
+subtitle: "Final Project"
 author: "Hayley C., Felicia P., Ian L., Shane W."
 format: 
   html:
@@ -64,7 +64,7 @@ life_expectancy_data <- life_expectancy_data |>
 
 To the clean the data, we looked at the data types of the values and saw that all the numbers were of the type, character, despite having their class be numeric. To clean this, we mutated each year's column to be a numeric type.
 
-The year names initially had an X in front of the name when the data was first loaded. We chose to keep this naming convention so that when referencing the name, we could use the more common way of referencing a column name instead of back tics.
+The year names initially had an X in front of the name when the data was first loaded. We chose to remove this naming convention after pivoting the data so that we can easily reference the years when graphing our data.
 
 Instead of eliminating NA values in average, those values were left so that when joining the data, we can make a decision which years or countries to pick based on data that overlaps between the data frames.
 
@@ -72,12 +72,14 @@ Instead of eliminating NA values in average, those values were left so that when
 avg_di_long <- average_daily_income_data|>
   pivot_longer(cols = -country,
                names_to = "Year",
-               values_to = "Average Daily Income")
+               values_to = "Average Daily Income") |>
+  mutate(Year = as.integer(str_remove(Year, "X")))
 
 avg_le_long <- life_expectancy_data|>
   pivot_longer(cols = -country,
                names_to = "Year",
-               values_to = "Average Life Expectancy")
+               values_to = "Average Life Expectancy") |>
+  mutate(Year = as.integer(str_remove(Year, "X")))
 ```
 
 ### How the Data was Pivoted
@@ -103,18 +105,19 @@ The explanatory variable is the average income and the response variable is the 
 
 ```{r}
 daily_income_and_life_expectancy |>
-  ggplot(aes(x = `Average Daily Income`, y = `Average Life Expectancy`)) +
-    geom_point(alpha = 0.7, color = "steelblue") +
+  ggplot(aes(x = `Average Daily Income`, 
+             y = `Average Life Expectancy`)) +
+    geom_jitter(alpha = 0.7, 
+                color = "Steel Blue") +
     theme_minimal() +
     labs(title = "Relationship between Average Daily Income and Life Expectancy",
          x = "Average Daily Income",
          y = "",
-         subtitle = "Average Life Expectancy at Birth")
+         subtitle = "Average Life Expectancy at Birth") 
 ```
 To explore the relationship overtime
 ```{r}
 daily_income_and_life_expectancy |>
-  mutate(Year = as.integer(str_remove(Year, "X"))) |>
   plot_ly(
     x = ~`Average Daily Income`,
     y = ~`Average Life Expectancy`,
@@ -127,7 +130,19 @@ daily_income_and_life_expectancy |>
   layout(
     title = "Changes in Average Daily Income and Life Expectancy Over Time",
     xaxis = list(title = "Average Daily Income"),
-    yaxis = list(title = "Average Life Expectancy at Birth")
+    yaxis = list(title = ""),
+    annotations = list(
+      list(
+        x = 0.5,
+        y = 1.05,
+        xref = "paper",
+        yref = "paper",
+        text = "Average Life Expectancy at Birth",
+        showarrow = FALSE,
+        font = list(size = 8)
+      )
+    ),
+    font = list(size = 8)
   ) |>
   animation_opts(
     frame = 1000, # milliseconds per frame
@@ -139,3 +154,43 @@ daily_income_and_life_expectancy |>
   )
 ```
 
+### Linear Regression
+#### Steps to Choosing Regression Features
+Linear regression was simplified by taking the year 2010. The reason for this is because daily income and life expectancy have shown significant changes over the centuries, making it challenging to capture the full extent of these trends in a single regression model.
+
+Historical data from the 1800s to the present day illustrates substantial shifts in both daily income and life expectancy, reflecting changes in economic, social, and healthcare systems globally.
+
+By selecting the year 2010 as a reference point, we aim to focus on a period that represents a modern snapshot of these trends. Here's why 2010 is a good choice:
+
+\t 1. Representative Modern Era: 2010 serves as a representative point in the modern era, offering insights into contemporary socioeconomic and health conditions across countries.
+
+\t 2. Mitigation of Predicted Data: The decision to exclude years beyond 2010 accounts for the absence of actual data and instead focuses on observed trends. This approach prevents potential biases introduced by predicted data, particularly in later years beyond the data collection timeframe.
+
+\t 3. Adequate Time for Analysis: With 14 years having passed since 2010, this timeframe provides sufficient data for analysis while minimizing the impact of short-term fluctuations that may occur within smaller time intervals.
+
+By anchoring our analysis to the year 2010, we aim to capture meaningful trends in daily income and life expectancy while ensuring the reliability and relevance of our linear regression model.
+
+#### Regression Code
+```{r}
+# Code for Q4.
+average_data_years <- daily_income_and_life_expectancy |>
+  filter(Year == 2010) |>
+  rename(daily_income_2010 = `Average Daily Income`,
+         life_expectancy_2010 = `Average Life Expectancy`) |>
+  select(Country, daily_income_2010, life_expectancy_2010)
+
+average_data_years_lm <- 
+  lm(life_expectancy_2010 ~ 
+       daily_income_2010, 
+     data = average_data_years)
+average_data_years_lm
+```
+The linear regression formula is $\hat{y} = 0.2669x + 65.1162$ where $x$ is the daily income in 2010 and $y$ is the life expectancy in 2010.
+
+#### Interpretation of coefficients:
+
+Intercept (65.1162): The intercept term represents the estimated life expectancy in the year 2010 when daily income is zero. However, this interpretation may not be practically meaningful since daily income cannot be zero. It is more relevant to interpret the intercept as the life expectancy when daily income is at its lowest observed value in the data set.
+
+Daily Income Coefficient (0.2669): The coefficient of daily income (0.2669) indicates the estimated change in life expectancy for a one-unit increase in daily income, holding all other variables constant. In this context, it suggests that, on average, for each additional unit increase in daily income, the life expectancy increases by 0.2669 years, given that all other factors remain constant.
+
+These interpretations provide insights into the relationship between daily income and life expectancy in the year 2010, as captured by the estimated regression model.
