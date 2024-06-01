@@ -23,6 +23,9 @@ library(tidyverse)
 library(dplyr)
 library(gganimate)
 library(plotly)
+library(broom)
+library(knitr)
+library(kableExtra)
 ```
 
 ## Data
@@ -194,3 +197,31 @@ Intercept (65.1162): The intercept term represents the estimated life expectancy
 Daily Income Coefficient (0.2669): The coefficient of daily income (0.2669) indicates the estimated change in life expectancy for a one-unit increase in daily income, holding all other variables constant. In this context, it suggests that, on average, for each additional unit increase in daily income, the life expectancy increases by 0.2669 years, given that all other factors remain constant.
 
 These interpretations provide insights into the relationship between daily income and life expectancy in the year 2010, as captured by the estimated regression model.
+
+### Model Fit
+
+```{r}
+# get residuals from model
+residuals <- augment(average_data_years_lm)
+model_variance_summary <- average_data_years |>
+  summarise(
+    Total_Variance = var(average_data_years$life_expectancy_2010),
+    Fitted_Variance = var(average_data_years_lm$fitted.values),
+    Residual_Variance = var(residuals(average_data_years_lm))
+  )
+
+kable(model_variance_summary, 
+      caption = "Variance Summary of Regression Model",
+      col.names = c("Total Variance",
+                    "Fitted Variance",
+                    "Residual Variance"))
+```
+The proportion of variability in the response values was 75.79% which represents the overall variability present in the response variable.
+
+The fitted variance (31.69%), is a substantial amount of the total variance (75.79%) which indicates that the model can account for a significant amount of variability in the response variable. 
+
+However, the residual variance (44.09%) indicates that the majority of variation (58.17%) in the response variable could not be explained. This leads to the conclusion that the quality of the model is closer to poor.
+
+
+
+
