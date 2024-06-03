@@ -31,10 +31,17 @@ library(kableExtra)
 ## Data
 
 ### Variables
+### Daily Mean Income Household Per Capita
+GapMinder compiled data on daily mean household income per capita to analyze income distributions over hundreds of years. These figures are anchored in the official Mean Income indicator from the World Bank, derived from household surveys. For countries lacking World Bank data, GapMinder estimated mean income based on GDP per capita. The available time frame for actual World Bank data spans from 1967 to 2021, though most countries have limited data points within these years.
 
-Average daily income is the mean daily household per capita income or consumption expenditure from the survey expressed in 2017 constant internship dollars.
+GapMinder used growth rates of constant dollar GDP per capita to estimate mean incomes historically from 1800 and project them up to 2100. For the period 1981-2019, they relied on World Bank data, known for its comprehensive coverage, published in the World Development Indicators as "Survey mean consumption or income per capita, total population (2017 PPP dollars per day)." The indicator we reference is described in the World Bank Poverty and Inequality Platform (PIP) as "Indicators Survey mean/average consumption or income per capita, total population (2017 PPP dollars per day). The mean represents the average monthly household per capita income or consumption expenditure from the survey in 2017 PPP."
 
-The life expectancy, at birth is the number of years a newborn infant would live if the current mortality rates at different ages were to stay the same throughout its life.
+In short, the average daily income is the mean daily household per capita income or consumption expenditure from the survey, expressed in 2017 constant international dollars.
+
+#### Life Expectancy
+GapMinder collects life expectancy data from various sources to create a comprehensive dataset spanning from 1800 to 2100. Life expectancy at birth refers to the average number of years a newborn is expected to live, assuming that current mortality rates remain constant throughout their lifetime.
+
+For the period from 1800 to 1970, GapMinder relies on its own compiled data (version 7), which includes information from over 100 sources and accounts for historical events causing significant mortality dips. From 1950 to 2019, data is primarily sourced from the Global Burden of Disease Study 2019 by the Institute for Health Metrics and Evaluation (IHME). This source provides detailed annual estimates. For projections from 2020 to 2100, GapMinder uses forecasts from the United Nations' World Population Prospects 2022. The data is carefully combined, prioritizing IHME data when available, and extending IHME series with UN estimates for future projections.
 
 ### Hypothesized Relationship Between the Variables
 
