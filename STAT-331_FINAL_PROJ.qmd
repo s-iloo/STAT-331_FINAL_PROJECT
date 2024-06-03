@@ -223,11 +223,11 @@ kable(model_variance_summary,
                     "Fitted Variance",
                     "Residual Variance"))
 ```
-The proportion of variability in the response values was 75.79% which represents the overall variability present in the response variable.
+The total variance in the model is 75.79. Of the total variance, 31.70 is explained by the model, which leads us to an $R^2$ of 41.82%. The remaining 44.08 in the total variance is unexplained.
 
-The fitted variance (31.69%), is a substantial amount of the total variance (75.79%) which indicates that the model can account for a significant amount of variability in the response variable. 
+Based on the $R^2$ of 41.82%, the model quality is moderate to poor. The majority of the variability in life expectancy is not explained by daily income.
 
-However, the residual variance (44.09%) indicates that the majority of variation (58.17%) in the response variable could not be explained. This leads to the conclusion that the quality of the model is closer to poor.
+
 
 
 
