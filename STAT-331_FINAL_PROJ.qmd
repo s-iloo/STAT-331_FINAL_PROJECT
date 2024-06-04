@@ -226,6 +226,66 @@ kable(model_variance_summary,
 The total variance in the model is 75.79. Of the total variance, 31.70 is explained by the model, which leads us to an $R^2$ of 41.82%. The remaining 44.08 in the total variance is unexplained.
 
 Based on the $R^2$ of 41.82%, the model quality is moderate to poor. The majority of the variability in life expectancy is not explained by daily income.
+```{r}
+rand_error <- function(x, mean = 0, sd){
+  # Add the body.
+  x + rnorm(length(x), 
+            mean, 
+            sd)
+  
+}
+
+noise <- function(x, mean = 0, sd){
+  x + rnorm(length(x), 
+            mean, 
+            sd)
+}
+```
+
+```{r}
+# linear regression model
+data_lm <- average_data_years_lm
+
+# predict value
+pred_expectancy <- predict(data_lm)
+
+# get sigma
+est_sigma <- sigma(data_lm)
+
+# generate new fake data set
+nsims <- 1000
+sims <- map_dfc(.x = 1:nsims,
+                .f = ~ tibble(sim = noise(pred_expectancy, 
+                                          sd = est_sigma)
+                              )
+                ) |>
+  rename_with(~ str_replace(., pattern = "\\.\\.\\.", replacement = "_"))
+
+sims <- average_data_years |> 
+  filter(!is.na(life_expectancy_2010),!is.na(daily_income_2010)) |> 
+  select(life_expectancy_2010, daily_income_2010) |> 
+  bind_cols(sims)
+
+suppressMessages(suppressWarnings({ 
+  sim_r_sq <- sims |> 
+    map(~ lm(life_expectancy_2010 ~ .x, data = sims)) |> 
+    map(glance) |> 
+    map_dbl(~ .x$r.squared) 
+    
+  sim_r_sq <- sim_r_sq[names(sim_r_sq) != "life_expectancy_2010"]
+}))
+```
+```{r}
+tibble(sims = sim_r_sq) |> 
+  ggplot(aes(x = sims)) + 
+  geom_histogram(binwidth = 0.025) +
+  labs(x = expression("Simulated"~ R^2),
+       y = "",
+       title = expression("Simulated " ~ R^2 ~ "Values versus the Observed" ~ R^2),
+       subtitle = "Number of Simulated Models") +
+  theme_bw()
+```
+
 
 
 
