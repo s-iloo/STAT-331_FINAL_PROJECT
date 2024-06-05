@@ -190,18 +190,18 @@ average_data_years <- daily_income_and_life_expectancy |>
   select(Country, daily_income_2010, life_expectancy_2010)
 
 average_data_years_lm <- 
-  lm(life_expectancy_2010 ~ 
+  lm(life_expectancy_2010^5 ~ 
        daily_income_2010, 
      data = average_data_years)
 average_data_years_lm
 ```
-The linear regression formula is $\hat{y} = 0.2669x + 65.1162$ where $x$ is the daily income in 2010 and $y$ is the life expectancy in 2010.
+The linear regression formula is $\hat{y} = 3.487\times10^7+1.282\times10^9x$ where $x$ is the daily income in 2010 and $y$ is the life expectancy in 2010.
 
 #### Interpretation of coefficients:
 
-Intercept (65.1162): The intercept term represents the estimated life expectancy in the year 2010 when daily income is zero. However, this interpretation may not be practically meaningful since daily income cannot be zero. It is more relevant to interpret the intercept as the life expectancy when daily income is at its lowest observed value in the data set.
+Intercept ($3.47\times10^7$): The intercept term represents the estimated life expectancy in the year 2010 when daily income is zero. By taking the 5th root of the intercept, we find that the intercept is 30.31 years. However, this interpretation may not be practically meaningful since daily income cannot be zero. It is more relevant to interpret the intercept as the life expectancy when daily income is at its lowest observed value in the data set.
 
-Daily Income Coefficient (0.2669): The coefficient of daily income (0.2669) indicates the estimated change in life expectancy for a one-unit increase in daily income, holding all other variables constant. In this context, it suggests that, on average, for each additional unit increase in daily income, the life expectancy increases by 0.2669 years, given that all other factors remain constant.
+Daily Income Coefficient ($1.82\times10^9$): The coefficient of daily income indicates the estimated change in life expectancy for a one-unit increase in daily income. By taking the 5th root of the coefficient for daily income in 2010, we find that for each 1 unit increase in daily income, there is an increase in life expectancy of about 10.31 years.
 
 These interpretations provide insights into the relationship between daily income and life expectancy in the year 2010, as captured by the estimated regression model.
 
