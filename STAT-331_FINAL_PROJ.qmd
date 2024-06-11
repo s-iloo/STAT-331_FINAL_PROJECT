@@ -224,9 +224,10 @@ kable(model_variance_summary,
                     "Fitted Variance",
                     "Residual Variance"))
 ```
-The total variance in the model is 75.79. Of the total variance, 31.70 is explained by the model, which leads us to an $R^2$ of 41.82%. The remaining 44.08 in the total variance is unexplained.
+The total variance in the model is 75.79. Of the total variance, 49.27 is explained by the model, which leads us to an $R^2$ of 65.01%. The remaining 26.51 in the total variance is unexplained.
 
-Based on the $R^2$ of 41.82%, the model quality is moderate to poor. The majority of the variability in life expectancy is not explained by daily income.
+Based on the $R^2$ of 65.01%, the model quality is moderately good. While the log of daily income explains the majority of the variability of life expectancy, there is still a significant amount of variance unexplained in the model.
+
 ```{r}
 rand_error <- function(x, mean = 0, sd){
   # Add the body.
@@ -278,9 +279,9 @@ sims_long|>
                        y = Value))+
   geom_jitter(color = "steelblue", alpha = 0.7)+
   theme_minimal()+
-  labs(title = "Simulated Life Expectancies in 2010 based on Observed Daily Incomes",
-       subtitle = "Simulated Life Expectancies",
-       x = "Daily Income in 2010",
+  labs(title = "Relationship between Average Daily Income and Simulated Life Expectancy",
+       subtitle = "Simulated Life Expectancies (2010)",
+       x = "Average Daily Income in 2010",
        y = "")
 daily_income_and_life_expectancy |>
   ggplot(aes(x = `Average Daily Income`, 
@@ -292,7 +293,11 @@ daily_income_and_life_expectancy |>
          x = "Average Daily Income",
          y = "",
          subtitle = "Average Life Expectancy at Birth") 
+```
 
+Both plots show the same general trend, that there is a positive relationship between daily income and life expectancy. The data is more dense at lower income levels, coinciding with that the majority of the population has relatively low income levels. Since we focused on the year 2010 for the simulated data, there is more clustering at specific income levels in the plot of simulated data since there was only 195 observations for 2010. As a result, the observed data is more continuous.
+
+```{r}
 suppressMessages(suppressWarnings({ 
   sim_r_sq <- sims |> 
     map(~ lm(life_expectancy_2010 ~ log(.x), data = sims)) |> 
@@ -301,16 +306,17 @@ suppressMessages(suppressWarnings({
     
   sim_r_sq <- sim_r_sq[names(sim_r_sq) != "life_expectancy_2010"]
 }))
-```
-```{r}
+
 tibble(sims = sim_r_sq) |> 
   ggplot(aes(x = sims)) + 
   geom_histogram(binwidth = 0.025) +
   labs(x = expression("Simulated"~ R^2),
        y = "",
-       title = expression("Simulated " ~ R^2 ~ "Values versus the Observed" ~ R^2),
+       title = expression("Simulated " ~ R^2 ~ "Values"),
        subtitle = "Number of Simulated Models") +
+  scale_x_continuous(breaks = seq(0.4,0.7,by = 0.025))+
   theme_bw()
+
 ```
 
-In this plot, we see that the simulated datasets have $R^2$ values between 0.3 and 0.65. The peak of the histogram is around an $R^2$ value of approximately 0.46, suggesting that our simulated data accounts for about 46.2% of the variability in the observed life expectancy in 2010. The distribution of $R^2$ values suggests that the majority of the simulated models explain between 40% and 50% of the variability in the data. This distribution also shows that although some of the models work better (up to 65% variability explained), many of the models perform worse, explaining as little as 30% of the variability. Since the simulated data centers around a mean of 0.462, it shows that the statistical model used for the simulation is somewhat effective but could definitely be improved. The observed $R^2$ is 65.01% and compared to an average of 46.2% $R^2$ for the simulated models this shows that the model used for simulation isn't as consistent with the actual data. 
+In this plot, we see that the simulated datasets have $R^2$ values between 0.5 and 0.65. The peak of the histogram is around an $R^2$ value of approximately 0.575. The distribution of $R^2$ values suggests that the majority of the simulated models explain between 55% and 60% of the variability in the data. Since the simulated data centers around a mean of 0.575, it shows that the statistical model used for the simulation is relatively effective, as our observed $R^2$ was 0.6501. However, a small portion of the simulated $R^2$ values reached as high as 0.65, suggesting that while most of the simulated models underperform compared to our observed model, some models do get close to the observed level of explanatory power.
