@@ -194,6 +194,7 @@ average_data_years_lm <-
        log(daily_income_2010), 
      data = average_data_years)
 average_data_years_lm
+
 ```
 The linear regression formula is $\hat{y} = 53.5367+6.802\times log(x)$ where $x$ is the daily income in 2010 and $y$ is the life expectancy in 2010.
 
@@ -312,9 +313,4 @@ tibble(sims = sim_r_sq) |>
   theme_bw()
 ```
 
-
-
-
-
-
-
+In this plot, we see that the simulated datasets have $R^2$ values between 0.3 and 0.65. The peak of the histogram is around an $R^2$ value of approximately 0.46, suggesting that our simulated data accounts for about 46.2% of the variability in the observed life expectancy in 2010. The distribution of $R^2$ values suggests that the majority of the simulated models explain between 40% and 50% of the variability in the data. This distribution also shows that although some of the models work better (up to 65% variability explained), many of the models perform worse, explaining as little as 30% of the variability. Since the simulated data centers around a mean of 0.462, it shows that the statistical model used for the simulation is somewhat effective but could definitely be improved. The observed $R^2$ is 65.01% and compared to an average of 46.2% $R^2$ for the simulated models this shows that the model used for simulation isn't as consistent with the actual data. 
