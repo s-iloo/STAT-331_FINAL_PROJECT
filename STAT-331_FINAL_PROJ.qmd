@@ -6,6 +6,7 @@ format:
   html:
     embed-resources: true
     code-tools: true
+    code-fold: true
     toc: true
     number-sections: true
 editor: source
@@ -20,8 +21,6 @@ execute:
 
 ```{r}
 library(tidyverse)
-library(dplyr)
-library(gganimate)
 library(plotly)
 library(broom)
 library(knitr)
@@ -53,15 +52,6 @@ average_daily_income_data <- read.csv("./mincpcap_cppp.csv")
 life_expectancy_data <- read.csv("./lifeExpectancy.csv")
 ```
 
-```{r Check Column Types}
-
-average_daily_income_data |> 
-  summarise(across(.cols = everything(), 
-                   .fns = typeof))
-life_expectancy_data |> 
-  summarise(across(.cols = everything(), 
-                   .fns = typeof))
-```
 
 ```{r }
 average_daily_income_data <- average_daily_income_data |>
@@ -125,7 +115,7 @@ daily_income_and_life_expectancy |>
          y = "",
          subtitle = "Average Life Expectancy at Birth") 
 ```
-To explore the relationship overtime
+To explore the relationship overtime, visuals were constructed for each year:
 ```{r}
 daily_income_and_life_expectancy |>
   plot_ly(
@@ -163,6 +153,7 @@ daily_income_and_life_expectancy |>
     currentvalue = list(prefix = "Year: ")
   )
 ```
+The visual with all the years displays a log curve and not necessarily a linear relationship. It can be seen that with a higher average daily income, the life expectancy at birth is also higher. Taking a loook year by year, as time progresses, the average daily income also generally increases. This is expected due to the change in value of currency and inflation. 
 
 ### Linear Regression
 #### Steps to Choosing Regression Features
@@ -227,6 +218,9 @@ kable(model_variance_summary,
 The total variance in the model is 75.79. Of the total variance, 49.27 is explained by the model, which leads us to an $R^2$ of 65.01%. The remaining 26.51 in the total variance is unexplained.
 
 Based on the $R^2$ of 65.01%, the model quality is moderately good. While the log of daily income explains the majority of the variability of life expectancy, there is still a significant amount of variance unexplained in the model.
+
+## Simulated Data
+### Visual of Simulated Data
 
 ```{r}
 rand_error <- function(x, mean = 0, sd){
@@ -297,6 +291,7 @@ daily_income_and_life_expectancy |>
 
 Both plots show the same general trend, that there is a positive relationship between daily income and life expectancy. The data is more dense at lower income levels, coinciding with that the majority of the population has relatively low income levels. Since we focused on the year 2010 for the simulated data, there is more clustering at specific income levels in the plot of simulated data since there was only 195 observations for 2010. As a result, the observed data is more continuous.
 
+### Distribution of R-squared
 ```{r}
 suppressMessages(suppressWarnings({ 
   sim_r_sq <- sims |> 
