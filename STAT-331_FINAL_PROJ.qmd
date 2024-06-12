@@ -17,8 +17,6 @@ execute:
   warning: false
 ---
 
-## Library Imports
-
 ```{r}
 library(tidyverse)
 library(plotly)
@@ -46,14 +44,14 @@ For the period from 1800 to 1970, GapMinder relies on its own compiled data (ver
 
 Higher average daily income is positively associated with higher life expectancy at birth. 
 
-```{r Load data}
+```{r}
 
 average_daily_income_data <- read.csv("./mincpcap_cppp.csv")
 life_expectancy_data <- read.csv("./lifeExpectancy.csv")
 ```
 
 
-```{r }
+```{r}
 average_daily_income_data <- average_daily_income_data |>
   mutate(across(-country, as.numeric))
 life_expectancy_data <- life_expectancy_data |> 
